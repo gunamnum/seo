@@ -1,0 +1,15 @@
+.next
+.vercel
+.npm-cache
+node_modules
+dist
+coverage
+.env
+.env.local
+npm-debug.log*
+*.log
+tsconfig.tsbuildinfo
+.next-dev.log
+.next-dev.err.log
+.next-dev-*.out.log
+.next-dev-*.err.log
