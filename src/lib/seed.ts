@@ -37,6 +37,20 @@ function mockResearchFields(
   };
 }
 
+function verifiedResearchFields(sourceLabel: string, sourceUrl: string) {
+  return {
+    source_label: sourceLabel,
+    source_url: sourceUrl,
+    source_type: "official_source" as const,
+    verification_status: "verified" as const,
+    is_mock_data: false,
+    is_estimated: false,
+    is_user_provided: false,
+    source_quality_tier: "S" as const,
+    confidence_reason: "ตรวจผ่าน browser จาก official public source แล้ว"
+  };
+}
+
 const trendNames = [
   ["tiktok", "thailand", "RAW เป็นภาพจบ Bright CG", "clip_format", 92, 84, 76, 88, 96, 64],
   ["instagram", "thailand", "คารูเซลครอปรายละเอียดโทนอนิเมะพาสเทล", "visual_style", 74, 62, 71, 72, 91, 58],
@@ -52,7 +66,44 @@ const trendNames = [
   ["facebook", "thailand", "โพสต์อัลบั้มแพ็กเกจจองคิว", "keyword", 58, 40, 51, 74, 77, 80]
 ] as const;
 
-export const trendItems: TrendItem[] = trendNames.map((item, index) => {
+const reportTrendScore = calculateTrendScore({
+  hashtagKeywordVelocity: 82,
+  audioFormatVelocity: 62,
+  crossPlatformSignal: 74,
+  eventRelevanceThailand: 96,
+  visualFitBrightCgCosplay: 92,
+  competitionGap: 78
+});
+
+const reportTrendItems: TrendItem[] = [
+  {
+    ...mockResearchFields("รายงาน mock จาก AFA Thailand 2026 ที่ตรวจพบผ่าน browser"),
+    id: "trend-afa-thailand-2026",
+    platform: "google_trends",
+    region: "thailand",
+    trend_name: "AFA Thailand 2026: คลิปก่อน/หลังรีทัชก่อนงาน",
+    trend_type: "event",
+    current_metric: 82,
+    previous_metric: 48,
+    velocity: 82,
+    audio_format_velocity: 62,
+    cross_platform_signal: 74,
+    event_relevance_thailand: 96,
+    visual_fit_bright_cg_cosplay: 92,
+    competition_gap: 78,
+    trend_score: reportTrendScore.score,
+    confidence_level: reportTrendScore.confidence,
+    recommended_content_idea:
+      "ทำชุดคอนเทนต์ก่อนงาน AFA: เปิดคิวถ่าย, pose guide, BTS วันงาน, และ before/after retouch หลังงาน",
+    notes:
+      "อีเวนต์ยืนยันแล้วจาก official source แต่คะแนนเทรนด์/metric เป็น mock เพราะยังไม่มี analytics export หรือค่า Google Trends ที่บันทึกจริง",
+    collected_at: "2026-05-14"
+  }
+];
+
+export const trendItems: TrendItem[] = [
+  ...reportTrendItems,
+  ...trendNames.map((item, index) => {
   const score = calculateTrendScore({
     hashtagKeywordVelocity: item[4],
     audioFormatVelocity: item[5],
@@ -82,7 +133,8 @@ export const trendItems: TrendItem[] = trendNames.map((item, index) => {
     notes: "ข้อมูล mock ต้องตรวจสอบเองก่อนใช้วางแผนจริง",
     collected_at: "2026-05-13"
   };
-});
+  })
+];
 
 const clipTypes: ViralClip["content_type"][] = [
   "bts",
@@ -226,7 +278,33 @@ export const benchmarkCreators: BenchmarkCreator[] = benchmarkRegions.map((regio
   };
 });
 
-export const events: EventItem[] = Array.from({ length: 8 }, (_, index) => {
+const verifiedAfaEvent: EventItem = {
+  ...verifiedResearchFields(
+    "QSNCC official event calendar - Anime Festival Asia Thailand 2026",
+    "https://www.qsncc.com/en/whats-on/event-calendar/anime-festival-asia-thailand-2026/"
+  ),
+  id: "event-afa-thailand-2026",
+  event_name: "Anime Festival Asia Thailand 2026",
+  country_or_region: "thailand",
+  city: "กรุงเทพฯ",
+  venue: "Queen Sirikit National Convention Center - Exhibition Hall 8, Level LG",
+  start_date: "2026-05-30",
+  end_date: "2026-05-31",
+  event_type: "japanese_pop_culture",
+  fandom_relevance: "Anime, Cosplay, Gaming และ Japanese pop culture",
+  expected_content_opportunity:
+    "เปิดคิวถ่ายก่อนงาน, คลิป BTS วันงาน, album preview, before/after retouch และ CTA จองคิวหลังงาน",
+  recommended_pre_event_content:
+    "โพสต์เปิดคิว AFA, pose guide, ตัวอย่าง bright CG retouch, checklist เตรียมตัวไปงาน",
+  recommended_event_day_content:
+    "เก็บ BTS แนวตั้ง, story, quick portrait preview และ short reveal โดยขออนุญาต/แท็กหลังยืนยันเอง",
+  recommended_post_event_content:
+    "ลงอัลบั้ม preview ภายใน 1-3 วัน ตามด้วยรีทัช final และ breakdown CG glow",
+  notes:
+    "Cross-check กับ AFA official page: https://animefestival.asia/afath26/ ยืนยันวันที่ 30 & 31 May 2026"
+};
+
+const mockEvents: EventItem[] = Array.from({ length: 8 }, (_, index) => {
   const month = String((index % 6) + 6).padStart(2, "0");
   const startDay = String((index % 8) + 1).padStart(2, "0");
   const endDay = String((index % 8) + 2).padStart(2, "0");
@@ -249,6 +327,8 @@ export const events: EventItem[] = Array.from({ length: 8 }, (_, index) => {
     notes: "วันที่อีเวนต์จริงต้องตรวจสอบเองก่อนใช้"
   };
 });
+
+export const events: EventItem[] = [verifiedAfaEvent, ...mockEvents];
 
 const toolNames = [
   ["GIMP", "photo_editing", "open_source", "แต่งภาพและรีทัชพื้นฐาน"],
@@ -301,7 +381,32 @@ const baseKeywords = [
   "ภาพคอสเพลย์อนิเมะ"
 ];
 
-export const seoKeywords: SeoKeyword[] = Array.from({ length: 30 }, (_, index) => ({
+const reportSeoKeywords: SeoKeyword[] = [
+  "ถ่ายคอสเพลย์",
+  "ช่างภาพคอสเพลย์",
+  "รีทัชภาพคอส",
+  "cosplay thailand",
+  "cosplay photography",
+  "cosplay retouch"
+].map((keyword, index) => ({
+  ...mockResearchFields("รายงาน mock keyword จาก AFA Thailand 2026"),
+  source_url:
+    "https://trends.google.com/trends/explore?geo=TH&q=%E0%B8%96%E0%B9%88%E0%B8%B2%E0%B8%A2%E0%B8%84%E0%B8%AD%E0%B8%AA%E0%B9%80%E0%B8%9E%E0%B8%A5%E0%B8%A2%E0%B9%8C,cosplay%20photography,cosplay%20thailand",
+  id: `seo-afa-${index + 1}`,
+  platform: (["tiktok", "instagram", "facebook"] as Platform[])[index % 3],
+  language: index < 3 ? "thai" : "english",
+  keyword,
+  search_intent: (["event", "booking", "retouch", "event", "portfolio", "retouch"] as const)[index],
+  priority: 100 - index,
+  recommended_caption_usage: "ใส่ในประโยคแรกหรือ on-screen text ของชุดคอนเทนต์ AFA",
+  recommended_hashtags: ["ถ่ายคอสเพลย์", "cosplaythailand", "cosplayretouch"],
+  recommended_on_screen_text: "AFA Thailand 2026 cosplay retouch",
+  notes: "keyword เป็น mock fallback จนกว่าจะมีค่า search/export จริง"
+}));
+
+export const seoKeywords: SeoKeyword[] = [
+  ...reportSeoKeywords,
+  ...Array.from({ length: 30 }, (_, index) => ({
   ...mockResearchFields("ข้อมูล mock คีย์เวิร์ด SEO"),
   id: `seo-${index + 1}`,
   platform: (["tiktok", "instagram", "facebook"] as Platform[])[index % 3],
@@ -315,9 +420,36 @@ export const seoKeywords: SeoKeyword[] = Array.from({ length: 30 }, (_, index) =
   recommended_hashtags: ["ถ่ายคอสเพลย์", "cosplaythailand", "cosplayretouch"],
   recommended_on_screen_text: "RAW เป็นภาพจบ cosplay glow",
   notes: "คีย์เวิร์ด mock ต้องตรวจด้วย platform search หรือ CSV import"
-}));
+  }))
+];
 
-export const contentIdeas: ContentIdea[] = Array.from({ length: 20 }, (_, index) => ({
+const reportContentIdeas: ContentIdea[] = [
+  {
+    ...mockResearchFields("รายงาน mock content plan จาก AFA Thailand 2026"),
+    id: "idea-afa-thailand-2026",
+    title: "AFA Thailand 2026: ยิงคอนเทนต์ก่อนงาน-วันงาน-หลังงาน",
+    platform_target: "tiktok",
+    related_trend_id: "trend-afa-thailand-2026",
+    related_event_id: "event-afa-thailand-2026",
+    content_type: "event_recap",
+    hook: "AFA Thailand 2026 ต้องถ่ายอะไรให้คุ้ม reach ใน 8 วิ",
+    caption_th:
+      "AFA Thailand 2026 มาแล้ว เตรียมถ่ายคอสเพลย์ + รีทัชภาพคอสสไตล์ bright CG พร้อมคิวถ่ายและ recap หลังงาน",
+    caption_en: "AFA Thailand 2026 cosplay photography and bright CG retouch plan.",
+    hashtags: ["ถ่ายคอสเพลย์", "ช่างภาพคอสเพลย์", "cosplay thailand", "cosplay retouch"],
+    shot_list: ["ประกาศเปิดคิว", "pose guide", "BTS วันงาน", "ภาพ preview", "before/after retouch"],
+    retouch_notes: "Bright pastel CG, ผิวสะอาด, rim light นุ่ม, particle น้อยแต่เห็น payoff",
+    cg_notes: "เติม glow และแสงขอบเฉพาะภาพ hero ไม่ทำทุกภาพจนล้น",
+    posting_window: "ก่อนงาน 14 วัน ถึงหลังงาน 3 วัน",
+    expected_effort: "medium",
+    expected_impact: "high",
+    status: "planned"
+  }
+];
+
+export const contentIdeas: ContentIdea[] = [
+  ...reportContentIdeas,
+  ...Array.from({ length: 20 }, (_, index) => ({
   ...mockResearchFields("ข้อมูล mock ไอเดียคอนเทนต์"),
   id: `idea-${index + 1}`,
   title: [
@@ -342,7 +474,8 @@ export const contentIdeas: ContentIdea[] = Array.from({ length: 20 }, (_, index)
   expected_effort: (["low", "medium", "high"] as const)[index % 3],
   expected_impact: (["medium", "high", "low"] as const)[index % 3],
   status: (["idea", "planned", "shooting", "editing", "posted"] as const)[index % 5]
-}));
+  }))
+];
 
 export const marketIndicators: MarketIndicator[] = [
   "การใช้โซเชียลในไทย",

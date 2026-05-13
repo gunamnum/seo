@@ -71,6 +71,12 @@ export const projectRoutes: ProjectRoute[] = [
     purpose: "สรุป Growth Brief รายสัปดาห์ตามรูปแบบของโปรเจกต์"
   },
   {
+    path: "/report",
+    label: "รายงาน",
+    pageFile: "app/report/page.tsx",
+    purpose: "รายงานจาก browser research พร้อมข้อมูล verified และ mock fallback"
+  },
+  {
     path: "/quality",
     label: "คุณภาพข้อมูล",
     pageFile: "app/quality/page.tsx",

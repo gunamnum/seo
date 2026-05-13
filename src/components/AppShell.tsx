@@ -2,14 +2,15 @@ import Link from "next/link";
 import { projectRoutes } from "@/lib/implementationQa";
 
 const routeByPath = new Map(projectRoutes.map((route) => [route.path, route]));
-const primaryPaths = ["/", "/brief", "/trends", "/clips", "/seo", "/import"];
+const primaryPaths = ["/", "/brief", "/report", "/trends", "/seo", "/import"];
 const navItems = projectRoutes.map((route) => [route.path, route.label] as const);
 const marqueeItems = [
   "mock/offline data",
   "China metrics separated",
   "Thai competitors manual only",
   "CSV import ready",
-  "weekly growth brief"
+  "weekly growth brief",
+  "browser research report"
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
