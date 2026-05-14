@@ -466,6 +466,102 @@ const realEventRadar: EventItem[] = [
   }
 ];
 
+const verifiedUpcomingEvents: EventItem[] = [
+  {
+    ...verifiedResearchFields(
+      "Nippon Haku Bangkok 2026 official exhibition guide",
+      "https://nipponhaku.com/exhibition/"
+    ),
+    id: "event-nippon-haku-bangkok-2026",
+    event_name: "Nippon Haku Bangkok 2026",
+    country_or_region: "thailand",
+    city: "กรุงเทพฯ",
+    venue: "Queen Sirikit National Convention Center",
+    start_date: "2026-08-28",
+    end_date: "2026-08-30",
+    event_type: "japanese_pop_culture",
+    fandom_relevance: "Japanese culture, manga, anime, character, figures, games และ subculture audience",
+    expected_content_opportunity:
+      "ทำ long-tail content สำหรับ Japanese culture audience: portrait booking, booth walk, cosplay-friendly recap และ keyword ไทย/อังกฤษ",
+    recommended_pre_event_content:
+      "โพสต์ guide จองคิวช่วงปลายสิงหาคม พร้อม sample bright CG และ keyword cosplay thailand",
+    recommended_event_day_content:
+      "เก็บ vertical BTS, booth ambience, portrait preview และ detail crop ของชุด/พร็อพ",
+    recommended_post_event_content:
+      "ลง recap แบบยาวบน Facebook และ carousel IG แยก detail crop + before/after retouch",
+    notes:
+      "Official exhibition page ระบุ 2026.8.28-30, QSNCC, และมี Japan manga/anime fair; ใช้เป็น verified upcoming anchor"
+  },
+  {
+    ...verifiedResearchFields(
+      "gamescom asia x Thailand Game Show 2026 official date and opening times",
+      "https://gamescom.asia/about/gamescom-asia/date-time"
+    ),
+    id: "event-gamescom-asia-thailand-game-show-2026",
+    event_name: "gamescom asia x Thailand Game Show 2026",
+    country_or_region: "thailand",
+    city: "กรุงเทพฯ",
+    venue: "Queen Sirikit National Convention Center",
+    start_date: "2026-10-29",
+    end_date: "2026-11-01",
+    event_type: "game",
+    fandom_relevance: "Gaming, esports, cosplay, streamer, creator และ pop-culture audience",
+    expected_content_opportunity:
+      "ทำ game cosplay content pipeline: character reveal, action retouch, event recap, creator networking และ booking CTA",
+    recommended_pre_event_content:
+      "เริ่ม series game cosplay retouch 4-6 สัปดาห์ก่อนงาน พร้อม on-screen text ที่ค้นหาเจอ",
+    recommended_event_day_content:
+      "เก็บ portrait preview, action pose, booth lighting note และ clip reveal แนวตั้ง",
+    recommended_post_event_content:
+      "โพสต์ recap ภายใน 48 ชั่วโมง แล้วต่อด้วย breakdown retouch สำหรับตัวละครเกม",
+    notes:
+      "Official gamescom asia page ระบุ 29 Oct - 1 Nov 2026 ที่ QSNCC; entertainment area 30 Oct - 1 Nov"
+  }
+];
+
+const additionalPublicEventRadarData = [
+  ["event-sakon-nakhon-cosplay-contest-2026", "Sakon Nakhon Cosplay Contest 2026", "สกลนคร", "Robinson Lifestyle Sakon Nakhon", "2026-05-23", "2026-05-23", "cosplay", "ประกวดคอสเพลย์ต่างจังหวัด เหมาะกับ local reach และ regional booking"],
+  ["event-mukdahan-cosplay-contest-2026", "Mukdahan Cosplay Contest 2026", "มุกดาหาร", "Robinson Lifestyle Mukdahan", "2026-05-24", "2026-05-24", "cosplay", "ประกวดคอสเพลย์ต่างจังหวัด ใช้ทำ regional event radar และ post-event CTA"],
+  ["event-hatyai-open-world-cosplay-2026", "HATYAI OPEN WORLD Cosplay Contest", "หาดใหญ่", "โรงยิมเนเซียม สนามกีฬาจิระนคร", "2026-06-20", "2026-06-20", "game", "อีเวนต์ esports + cosplay contest เหมาะกับ content สายเกมและ action retouch"],
+  ["event-akemicos-densetsu-anime-90-2026", "AKEMICOS DENSETSU ANIME 90", "กำแพงเพชร", "Robinson Lifestyle Kamphaengphet", "2026-06-27", "2026-06-27", "anime", "งานอนิเมะต่างจังหวัด ใช้ทดสอบ post format สำหรับ regional cosplay"],
+  ["event-cosseason-summer-of-love-2026", "CosSeason #1 - Summer of Love", "กรุงเทพฯ", "กรุงเทพฯ", "2026-06-27", "2026-06-27", "cosplay", "ใช้เป็น mid-year community radar ต้อง cross-check venue official เพิ่ม"],
+  ["event-verzo-2026", "VERZO", "กรุงเทพฯ", "MCC Hall, The Mall Bangkae", "2026-06-28", "2026-06-28", "cosplay", "งาน community/cosplay hall เหมาะกับ portrait preview และ quick recap"],
+  ["event-vocaunity-2026", "VocaUnity - Vocaloid Only Event", "กรุงเทพฯ", "หอประชุมอาคารรักตะกนิษฐ มหาวิทยาลัยสวนดุสิต", "2026-06-28", "2026-06-28", "japanese_pop_culture", "Vocaloid only event เหมาะกับ fandom-specific caption และ detail costume"],
+  ["event-maruya-46-2026", "Maruya #46", "กรุงเทพฯ", "สามย่านมิตรทาวน์ ฮอลล์ ชั้น 5", "2026-07-19", "2026-07-19", "japanese_pop_culture", "ACGN/doujin-style audience เหมาะกับ booth walk, creator market, และ cosplay recap"],
+  ["event-kokoro-cos-12-2026", "KOKORO cos #12 - Megane", "กรุงเทพฯ", "MCC Hall, The Mall Bangkae", "2026-08-09", "2026-08-09", "cosplay", "ธีม Megane เหมาะกับ portrait set, character detail, และ short carousel"],
+  ["event-holospace-2026", "HoloSpace - hololive & HOLOSTARS Only Event", "กรุงเทพฯ", "Season Square Srinakarin", "2026-08-15", "2026-08-15", "japanese_pop_culture", "VTuber only event ใช้เป็น China/Japan fandom adaptation แบบไม่เทียบ raw metric"],
+  ["event-anime-event-thailand-7-2026", "Anime Event Thailand 7 Idol Stage", "กรุงเทพฯ", "Island Hall, Fashion Island", "2026-08-22", "2026-08-23", "japanese_pop_culture", "anime/idol stage audience เหมาะกับ event recap และ performer-friendly visual style"],
+  ["event-cosquest-3-2026", "CosQuest 3", "กรุงเทพฯ", "สถานีกลางกรุงเทพอภิวัฒน์", "2026-09-06", "2026-09-06", "cosplay", "งาน community ที่โลเคชันใหญ่ เหมาะกับ travel/logistics guide และ portrait spot note"],
+  ["event-dokidoki-matsuri-2-racing-2026", "DokiDoki Matsuri 2 : Racing", "กรุงเทพฯ", "MCC Hall ชั้น 3, The Mall Lifestore Bangkae", "2026-09-20", "2026-09-20", "japanese_pop_culture", "ธีม racing เหมาะกับ dynamic pose, action retouch และ color grading"],
+  ["event-movies-carnival-2026", "Movies Carnival 2026", "กรุงเทพฯ", "Pulse Hall ชั้น 7, CentralwOrld", "2026-09-26", "2026-09-26", "other", "Western movies & series only event ใช้ขยาย portfolio นอก anime/game"],
+  ["event-one-piece-dad-song-fah-2-2026", "แดดส่องฟ้า #2 [Unofficial] : One Piece Only Event", "กรุงเทพฯ", "ชั้น 9 อาคารธนภูมิ", "2026-09-27", "2026-09-27", "japanese_pop_culture", "One Piece only event เหมาะกับ fandom SEO และ character-specific shoot guide"],
+  ["event-kokoro-cos-13-2026", "KOKORO cos #13 - Cupid's Tear", "กรุงเทพฯ", "MCC Hall, The Mall Bangkae", "2026-11-08", "2026-11-08", "cosplay", "ธีม Cupid's Tear เหมาะกับ emotional portrait และ soft CG retouch"],
+  ["event-maruya-47-2026", "Maruya #47", "กรุงเทพฯ", "Paragon Hall, Siam Paragon", "2026-11-22", "2026-11-22", "japanese_pop_culture", "late-year ACGN event เหมาะกับ yearly portfolio push"],
+  ["event-anime-event-thailand-8-2026", "Anime Event Thailand 8 Christmas Time!", "กรุงเทพฯ", "Island Hall, Fashion Island", "2026-12-19", "2026-12-20", "japanese_pop_culture", "Christmas anime event เหมาะกับ seasonal campaign และ gift-card/booking CTA"]
+] as const;
+
+const additionalPublicEventRadar: EventItem[] = additionalPublicEventRadarData.map((item) => ({
+  ...publicObservationResearchFields(
+    "Props&Ops public cosplay event schedule 2026",
+    "https://propsops.com/event/",
+    "Props&Ops schedule ล่าสุด 14 May 2026; ใช้เป็น event radar เท่านั้น ต้อง cross-check organizer/venue official ก่อนล็อกคิวจริง"
+  ),
+  id: item[0],
+  event_name: item[1],
+  country_or_region: "thailand",
+  city: item[2],
+  venue: item[3],
+  start_date: item[4],
+  end_date: item[5],
+  event_type: item[6] as EventItem["event_type"],
+  fandom_relevance: item[7],
+  expected_content_opportunity: `${item[7]} ทำเป็น pre-event post, event-day short clip, และ post-event before/after retouch`,
+  recommended_pre_event_content: "ทำ announcement คิวว่าง, pose/style guide, และ keyword ตามชื่ออีเวนต์",
+  recommended_event_day_content: "เก็บ BTS แนวตั้ง, portrait preview, detail costume, และ note แสง/โลเคชัน",
+  recommended_post_event_content: "ลง recap ภายใน 24-72 ชั่วโมง พร้อม CTA จองคิวและ first comment รวม keyword",
+  notes: "เพิ่มจาก Props&Ops schedule เพื่อขยาย event pipeline; ยังติด needs_update จนกว่าจะมี official organizer/venue cross-check"
+}));
+
 const mockEvents: EventItem[] = Array.from({ length: 8 }, (_, index) => {
   const month = String((index % 6) + 6).padStart(2, "0");
   const startDay = String((index % 8) + 1).padStart(2, "0");
@@ -490,7 +586,13 @@ const mockEvents: EventItem[] = Array.from({ length: 8 }, (_, index) => {
   };
 });
 
-export const events: EventItem[] = [...realEventRadar, verifiedAfaEvent, ...mockEvents];
+export const events: EventItem[] = [
+  ...realEventRadar,
+  ...verifiedUpcomingEvents,
+  ...additionalPublicEventRadar,
+  verifiedAfaEvent,
+  ...mockEvents
+];
 
 const toolNames = [
   ["GIMP", "photo_editing", "open_source", "แต่งภาพและรีทัชพื้นฐาน"],

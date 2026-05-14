@@ -11,10 +11,16 @@ const afaKeywords = seoKeywords.filter((keyword) => keyword.id.startsWith("seo-a
 const realEvents = events
   .filter((event) => !event.is_mock_data)
   .sort((a, b) => a.start_date.localeCompare(b.start_date));
+const reportDate = "2026-05-15";
+const upcomingRealEvents = realEvents.filter((event) => event.start_date >= reportDate);
 const verifiedEvents = realEvents.filter((event) => event.verification_status === "verified");
 const needsUpdateEvents = realEvents.filter((event) => event.verification_status !== "verified");
-const nextRealEvent = realEvents[0] ?? afaEvent;
+const nextRealEvent = upcomingRealEvents[0] ?? realEvents[0] ?? afaEvent;
 const realMarketSignals = marketIndicators.filter((indicator) => !indicator.is_mock_data);
+const urgentEvents = upcomingRealEvents.slice(0, 10);
+const laterEvents = upcomingRealEvents.slice(10);
+const officialUpcomingEvents = upcomingRealEvents.filter((event) => event.verification_status === "verified");
+const radarOnlyEvents = upcomingRealEvents.filter((event) => event.verification_status !== "verified");
 const agentRunSummaries = [
   ["Orchestrator", "orchestrator-brief.md", "Weekly Growth Brief skeleton + quality gate", "completed"],
   ["Source Research", "source-research.md", "source audit + next public/official sources", "completed"],
@@ -50,6 +56,16 @@ function verificationTone(status: string) {
   return "red";
 }
 
+function eventAction(event: (typeof realEvents)[number]) {
+  if (event.verification_status === "verified") return "ใช้วางแผนหลักได้ พร้อมติด source";
+  if (event.start_date <= "2026-05-31") return "รีบ cross-check แล้วทำ pre-event post";
+  return "ใส่ watchlist และตรวจ organizer/venue official";
+}
+
+function eventLabel(event: (typeof realEvents)[number]) {
+  return event.verification_status === "verified" ? "official anchor" : "public radar";
+}
+
 const brief = generateWeeklyGrowthBrief({
   trends: trendItems,
   ideas: contentIdeas,
@@ -65,7 +81,7 @@ export default function ReportPage() {
     <>
       <PageHeader
         title="รายงานจาก Browser Research"
-        description="เริ่มเก็บข้อมูลจริงจากแหล่ง public/official แล้ว: อีเวนต์ที่ยืนยันครบเป็น verified ส่วนตาราง public schedule ที่ยังต้อง cross-check จะติด needs_update ชัดเจน"
+        description="จัดข้อมูลใหม่เป็น research dashboard: แยกงานที่ใช้วางแผนได้, งานที่เป็น public radar ต้องตรวจเพิ่ม, สัญญาณตลาดรอง, source reference และข้อจำกัด เพื่อให้ตัดสินใจได้โดยไม่ปน mock กับ verified"
       >
         <Badge tone="green">{verifiedEvents.length} event verified</Badge>
         <Badge tone="amber">{needsUpdateEvents.length} needs_update</Badge>
@@ -73,74 +89,99 @@ export default function ReportPage() {
       </PageHeader>
 
       <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <KpiCard label="อีเวนต์จริงที่เริ่มเก็บ" value={String(realEvents.length)} detail="official + public schedule" accent="aqua" />
+        <KpiCard label="Upcoming pipeline" value={String(upcomingRealEvents.length)} detail="ตั้งแต่ 2026-05-15" accent="aqua" />
         <KpiCard label="งานถัดไป" value={nextRealEvent.start_date.slice(5)} detail={nextRealEvent.event_name} accent="sun" />
-        <KpiCard label="Market signals" value={String(realMarketSignals.length)} detail="Digital 2026 Thailand" accent="berry" />
-        <KpiCard label="คีย์เวิร์ด" value={String(afaKeywords.length)} detail="SEO mock fallback" accent="violet" />
+        <KpiCard label="Official anchors" value={String(officialUpcomingEvents.length)} detail="ใช้วางแผนหลักได้" accent="berry" />
+        <KpiCard label="Public radar" value={String(radarOnlyEvents.length)} detail="ต้อง cross-check" accent="violet" />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <Panel title="เรดาร์อีเวนต์จริงที่เริ่มเก็บแล้ว">
-          <SimpleTable
-            columns={["งาน", "วันที่", "สถานที่", "แหล่ง", "สถานะ"]}
-            rows={realEvents.map((event) => ({
-              งาน: event.event_name,
-              วันที่: `${event.start_date} ถึง ${event.end_date}`,
-              สถานที่: event.venue,
-              แหล่ง: (
-                <span>
-                  {labelSourceType(event.source_type)} · Tier {event.source_quality_tier}
-                </span>
-              ),
-              สถานะ: (
-                <Badge tone={verificationTone(event.verification_status)}>
-                  {labelVerification(event.verification_status)}
-                </Badge>
-              )
-            }))}
-          />
+        <Panel title="อ่านก่อนใช้ข้อมูล">
+          <div className="grid gap-4 md:grid-cols-3">
+            <div className="rounded-[24px] bg-block-mint p-5">
+              <Badge tone="green">verified</Badge>
+              <h3 className="mt-4 text-xl font-semibold">ใช้วางแผนหลักได้</h3>
+              <p className="mt-2 text-base leading-7">
+                อีเวนต์ที่มี official source เช่น AFA, Nippon Haku, gamescom ใช้ทำ calendar, caption, CTA และ production plan ได้
+              </p>
+            </div>
+            <div className="rounded-[24px] bg-block-cream p-5">
+              <Badge tone="amber">needs_update</Badge>
+              <h3 className="mt-4 text-xl font-semibold">ใช้เป็น radar ก่อน</h3>
+              <p className="mt-2 text-base leading-7">
+                Props&Ops ช่วยเห็น pipeline งานคอสเพลย์เร็ว แต่ต้อง cross-check กับ organizer/venue official ก่อนล็อกคิวถ่ายจริง
+              </p>
+            </div>
+            <div className="rounded-[24px] bg-block-pink p-5">
+              <Badge tone="amber">mock fallback</Badge>
+              <h3 className="mt-4 text-xl font-semibold">ยังไม่ใช่ metric จริง</h3>
+              <p className="mt-2 text-base leading-7">
+                Trend score, SEO priority และ content impact ยังรอ Google Trends export หรือ analytics export ของบัญชีคุณ
+              </p>
+            </div>
+          </div>
         </Panel>
 
-        <Panel title="โฟกัสงานถัดไป">
+        <Panel title="Priority Plan สัปดาห์นี้">
           <div className="rounded-[24px] bg-block-lime p-6">
             <div className="flex flex-wrap gap-2">
               <Badge tone={verificationTone(nextRealEvent.verification_status)}>
                 {labelVerification(nextRealEvent.verification_status)}
               </Badge>
               <Badge tone="purple">Tier {nextRealEvent.source_quality_tier}</Badge>
-              <Badge tone="amber">{nextRealEvent.source_type === "public_observation" ? "รอ cross-check" : "official"}</Badge>
+              <Badge tone="amber">{eventLabel(nextRealEvent)}</Badge>
             </div>
             <h3 className="mt-4 text-2xl font-semibold leading-8">{nextRealEvent.event_name}</h3>
             <p className="mt-3 text-base leading-7">{nextRealEvent.expected_content_opportunity}</p>
-            <p className="mt-4 text-sm leading-6">{nextRealEvent.notes}</p>
+            <p className="mt-4 text-base leading-7">
+              Action: {eventAction(nextRealEvent)} · โพสต์แรกควรเป็นคิวว่าง/pose guide แล้วตามด้วย BTS และ before/after retouch
+            </p>
           </div>
         </Panel>
 
-        <Panel title="ข้อมูลที่ยืนยันแล้ว">
+        <Panel title="Upcoming Event Pipeline">
           <SimpleTable
-            columns={["หัวข้อ", "ค่า", "สถานะ"]}
-            rows={[
-              {
-                หัวข้อ: "อีเวนต์",
-                ค่า: afaEvent.event_name,
-                สถานะ: <Badge tone="green">{labelVerification(afaEvent.verification_status)}</Badge>
-              },
-              {
-                หัวข้อ: "วันที่",
-                ค่า: `${afaEvent.start_date} ถึง ${afaEvent.end_date}`,
-                สถานะ: <Badge tone="green">official</Badge>
-              },
-              {
-                หัวข้อ: "สถานที่",
-                ค่า: afaEvent.venue,
-                สถานะ: <Badge tone="green">official</Badge>
-              },
-              {
-                หัวข้อ: "แหล่งข้อมูล",
-                ค่า: afaEvent.source_label,
-                สถานะ: <Badge tone="purple">Tier {afaEvent.source_quality_tier}</Badge>
-              }
-            ]}
+            columns={["งาน", "วันที่", "สถานที่", "สถานะ", "ใช้ทำอะไรต่อ"]}
+            rows={urgentEvents.map((event) => ({
+              งาน: event.event_name,
+              วันที่: `${event.start_date} ถึง ${event.end_date}`,
+              สถานที่: event.venue,
+              สถานะ: (
+                <Badge tone={verificationTone(event.verification_status)}>
+                  {eventLabel(event)} · {labelVerification(event.verification_status)}
+                </Badge>
+              ),
+              "ใช้ทำอะไรต่อ": eventAction(event)
+            }))}
+          />
+        </Panel>
+
+        <Panel title="Watchlist ระยะกลาง-ปลายปี">
+          <SimpleTable
+            columns={["งาน", "วันที่", "สถานที่", "สถานะ"]}
+            rows={laterEvents.map((event) => ({
+              งาน: event.event_name,
+              วันที่: `${event.start_date} ถึง ${event.end_date}`,
+              สถานที่: event.venue,
+              สถานะ: (
+                <Badge tone={verificationTone(event.verification_status)}>
+                  {eventLabel(event)}
+                </Badge>
+              )
+            }))}
+          />
+        </Panel>
+
+        <Panel title="Official Anchors ที่ยืนยันแล้ว">
+          <SimpleTable
+            columns={["งาน", "วันที่", "สถานที่", "แหล่ง", "ใช้กับแผน"]}
+            rows={officialUpcomingEvents.map((event) => ({
+              งาน: event.event_name,
+              วันที่: `${event.start_date} ถึง ${event.end_date}`,
+              สถานที่: event.venue,
+              แหล่ง: event.source_label,
+              ใช้กับแผน: event.expected_content_opportunity
+            }))}
           />
         </Panel>
 
