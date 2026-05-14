@@ -15,6 +15,16 @@ const verifiedEvents = realEvents.filter((event) => event.verification_status ==
 const needsUpdateEvents = realEvents.filter((event) => event.verification_status !== "verified");
 const nextRealEvent = realEvents[0] ?? afaEvent;
 const realMarketSignals = marketIndicators.filter((indicator) => !indicator.is_mock_data);
+const agentRunSummaries = [
+  ["Orchestrator", "orchestrator-brief.md", "Weekly Growth Brief skeleton + quality gate", "completed"],
+  ["Source Research", "source-research.md", "source audit + next public/official sources", "completed"],
+  ["Trend Intelligence", "trend-intelligence.md", "7-day trend plan + confidence penalties", "completed"],
+  ["China Platform", "china-platform.md", "China separation + adaptation risks", "completed"],
+  ["Competitor & Benchmark", "competitor-benchmark.md", "manual-input template; no real competitor names", "completed"],
+  ["SEO & Content Strategy", "seo-content-strategy.md", "caption hooks + CTA + required keywords", "completed"],
+  ["Data QA & Scoring", "data-qa-scoring.md", "CSV/schema/confidence QA; CSV URL quoting fixed after QA", "completed"],
+  ["Product UX / Implementation QA", "product-ux-implementation-qa.md", "route/readability/label QA; heading and mock badge fixed", "completed"]
+] as const;
 
 function verificationTone(status: string) {
   if (status === "verified") return "green";
@@ -116,7 +126,7 @@ export default function ReportPage() {
           />
         </Panel>
 
-        <Panel title="สัญญาณตลาดจริงจาก Digital 2026 Thailand">
+        <Panel title="สัญญาณตลาดรองจาก Digital 2026 Thailand">
           <SimpleTable
             columns={["สัญญาณ", "ค่า", "ใช้กับงานคอสเพลย์", "คุณภาพ"]}
             rows={realMarketSignals.map((indicator) => ({
@@ -132,6 +142,18 @@ export default function ReportPage() {
           />
         </Panel>
 
+        <Panel title="สถานะ Full 8-Agent Run">
+          <SimpleTable
+            columns={["Agent", "Output", "ผลลัพธ์", "สถานะ"]}
+            rows={agentRunSummaries.map((agent) => ({
+              Agent: agent[0],
+              Output: agent[1],
+              ผลลัพธ์: agent[2],
+              สถานะ: <Badge tone="green">{agent[3]}</Badge>
+            }))}
+          />
+        </Panel>
+
         <Panel title="ส่วนที่ใช้ mock ก่อน">
           <SimpleTable
             columns={["รายการ", "ค่า", "ความมั่นใจ"]}
@@ -139,7 +161,12 @@ export default function ReportPage() {
               {
                 รายการ: "เทรนด์",
                 ค่า: afaTrend.trend_name,
-                ความมั่นใจ: <Badge tone="amber">{labelConfidence(afaTrend.confidence_level)}</Badge>
+                ความมั่นใจ: (
+                  <span className="flex flex-wrap gap-2">
+                    <Badge tone="amber">mock fallback</Badge>
+                    <Badge tone="amber">{labelConfidence(afaTrend.confidence_level)}</Badge>
+                  </span>
+                )
               },
               {
                 รายการ: "คอนเทนต์หลัก",
