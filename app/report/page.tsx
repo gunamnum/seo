@@ -25,6 +25,24 @@ const agentRunSummaries = [
   ["Data QA & Scoring", "data-qa-scoring.md", "CSV/schema/confidence QA; CSV URL quoting fixed after QA", "completed"],
   ["Product UX / Implementation QA", "product-ux-implementation-qa.md", "route/readability/label QA; heading and mock badge fixed", "completed"]
 ] as const;
+const verifiedReferenceSignals = [
+  {
+    name: "ANIMONIUM 2026",
+    date: "2026-02-06 ถึง 2026-02-08",
+    venue: "Paragon Hall, 5th Floor, Siam Paragon",
+    source: "Royal Paragon Hall official event page",
+    url: "https://www.paragonhall.com/en/events/23/ANIMONIUM-2026",
+    use: "benchmark งาน anime/pop-culture Bangkok สำหรับ style, audience, และ event recap pattern"
+  },
+  {
+    name: "World Cosplay Summit 2026",
+    date: "2026-07-31 ถึง 2026-08-02",
+    venue: "Oasis 21, Aichi Arts Center, Sakae, Nagoya",
+    source: "World Cosplay Summit 2026 official site",
+    url: "https://worldcosplaysummit.jp/en/?p=70",
+    use: "global cosplay benchmark สำหรับ competition story, costume detail, และ China-to-Thailand/global adaptation"
+  }
+] as const;
 
 function verificationTone(status: string) {
   if (status === "verified") return "green";
@@ -137,6 +155,23 @@ export default function ReportPage() {
                 <Badge tone="amber">
                   {labelSourceType(indicator.source_type)} · Tier {indicator.source_quality_tier}
                 </Badge>
+              )
+            }))}
+          />
+        </Panel>
+
+        <Panel title="แหล่งอ้างอิงทางการที่อัปเดตเพิ่ม">
+          <SimpleTable
+            columns={["รายการ", "วันที่", "สถานที่", "ใช้กับแผน", "แหล่ง"]}
+            rows={verifiedReferenceSignals.map((item) => ({
+              รายการ: item.name,
+              วันที่: item.date,
+              สถานที่: item.venue,
+              ใช้กับแผน: item.use,
+              แหล่ง: (
+                <a className="font-semibold underline" href={item.url} target="_blank" rel="noreferrer">
+                  {item.source}
+                </a>
               )
             }))}
           />
