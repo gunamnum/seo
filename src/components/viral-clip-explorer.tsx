@@ -77,7 +77,16 @@ export function ViralClipExplorer({ clips }: { clips: ViralClip[] }) {
           columns={["คลิป", "แพลตฟอร์ม", "ยอดดู", "อัตราการมีส่วนร่วม", "คะแนนการแชร์", "Hook"]}
           rows={filtered.map((clip) => ({
             คลิป: (
-              <button className="font-bold text-ink underline-offset-2 hover:underline" onClick={() => setSelectedId(clip.id)}>
+              <button
+                type="button"
+                aria-pressed={selected?.id === clip.id}
+                className={
+                  selected?.id === clip.id
+                    ? "rounded-full bg-primary px-3 py-1.5 text-sm font-semibold text-on-primary"
+                    : "rounded-full bg-surface-soft px-3 py-1.5 text-sm font-semibold text-ink transition hover:bg-block-lime"
+                }
+                onClick={() => setSelectedId(clip.id)}
+              >
                 {clip.creator_display_name}
               </button>
             ),
@@ -93,6 +102,14 @@ export function ViralClipExplorer({ clips }: { clips: ViralClip[] }) {
         <h3 className="text-lg font-black">รายละเอียดคลิป</h3>
         {selected ? (
           <div className="mt-4 space-y-4 text-sm">
+            <div className="rounded-[24px] bg-block-lime p-4">
+              <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink">กำลังดู</div>
+              <div className="mt-1 text-lg font-black">{selected.creator_display_name}</div>
+              <div className="mt-2 flex flex-wrap gap-2">
+                <Badge tone="blue">{labelPlatform(selected.platform)}</Badge>
+                <Badge tone="green">selected</Badge>
+              </div>
+            </div>
             <div>
               <div className="font-mono text-[11px] uppercase tracking-[0.12em] text-ink">รูปแบบ Hook</div>
               <div className="mt-1 font-semibold">{selected.hook_text}</div>
