@@ -51,6 +51,24 @@ function verifiedResearchFields(sourceLabel: string, sourceUrl: string) {
   };
 }
 
+function publicObservationResearchFields(
+  sourceLabel: string,
+  sourceUrl: string,
+  confidenceReason = "ตรวจจาก public schedule ที่เปิดอ่านได้โดยไม่ต้องล็อกอิน ต้อง cross-check กับ organizer/venue official ก่อนใช้ตัดสินใจจริง"
+) {
+  return {
+    source_label: sourceLabel,
+    source_url: sourceUrl,
+    source_type: "public_observation" as const,
+    verification_status: "needs_update" as const,
+    is_mock_data: false,
+    is_estimated: false,
+    is_user_provided: false,
+    source_quality_tier: "B" as const,
+    confidence_reason: confidenceReason
+  };
+}
+
 const trendNames = [
   ["tiktok", "thailand", "RAW เป็นภาพจบ Bright CG", "clip_format", 92, 84, 76, 88, 96, 64],
   ["instagram", "thailand", "คารูเซลครอปรายละเอียดโทนอนิเมะพาสเทล", "visual_style", 74, 62, 71, 72, 91, 58],
@@ -304,6 +322,135 @@ const verifiedAfaEvent: EventItem = {
     "Cross-check กับ AFA official page: https://animefestival.asia/afath26/ ยืนยันวันที่ 30 & 31 May 2026"
 };
 
+const realEventRadar: EventItem[] = [
+  {
+    ...publicObservationResearchFields(
+      "Props&Ops public cosplay event schedule - Japan Week x WCS Thailand Korat qualifier",
+      "https://propsops.com/event/"
+    ),
+    id: "event-wcs-korat-qualifier-2026",
+    event_name: "Japan Week x World Cosplay Summit Thailand 2026 - รอบคัดเลือก #3",
+    country_or_region: "thailand",
+    city: "นครราชสีมา",
+    venue: "Central Korat",
+    start_date: "2026-05-16",
+    end_date: "2026-05-17",
+    event_type: "cosplay",
+    fandom_relevance: "World Cosplay Summit qualifier และ cosplay contest",
+    expected_content_opportunity:
+      "ทำ quick local event radar, แจ้งคิวถ่ายต่างจังหวัด, pose guide สำหรับประกวด และ recap หลังงานแบบเร็ว",
+    recommended_pre_event_content:
+      "โพสต์ short checklist ก่อนเดินทางและเปิดรับคิว portrait สั้นสำหรับ cosplayer ในงาน",
+    recommended_event_day_content:
+      "เก็บ BTS แนวตั้ง, detail costume, quick portrait preview และ note แสงในห้าง",
+    recommended_post_event_content:
+      "ลง recap ภายใน 24-48 ชั่วโมง พร้อมก่อน/หลังรีทัช 1 ภาพเพื่อดึง inquiry",
+    notes:
+      "Props&Ops ระบุรอบคัดเลือก #3 วันที่ 16-17 พ.ค. ที่ Central Korat; ยังต้อง cross-check organizer/venue official"
+  },
+  {
+    ...publicObservationResearchFields(
+      "Props&Ops public cosplay event schedule - MAYUCOS 7 x MAYUCARD 1",
+      "https://propsops.com/event/"
+    ),
+    id: "event-mayucos7-mayucard1-2026",
+    event_name: "MAYUCOS 7 x MAYUCARD 1",
+    country_or_region: "thailand",
+    city: "ภูเก็ต",
+    venue: "Central Floresta Phuket",
+    start_date: "2026-05-23",
+    end_date: "2026-05-23",
+    event_type: "cosplay",
+    fandom_relevance: "Cosplay convention และ cosplay contest",
+    expected_content_opportunity:
+      "ทดสอบคอนเทนต์ regional cosplay: เปิดคิวถ่ายภูเก็ต, before/after retouch, album preview",
+    recommended_pre_event_content:
+      "โพสต์ availability แบบสั้นพร้อม keyword ถ่ายคอสเพลย์ภูเก็ตและตัวอย่าง bright CG",
+    recommended_event_day_content:
+      "ถ่าย portrait preview สีสว่าง เก็บ story และเบื้องหลัง setup แสงง่าย",
+    recommended_post_event_content:
+      "ลง carousel ภาพจบกับ CTA จองคิวงานถัดไป",
+    notes:
+      "Props&Ops ระบุวันที่ 23 พ.ค. และสถานที่ Central Floresta Phuket; ยังต้องตรวจ organizer/venue official"
+  },
+  {
+    ...publicObservationResearchFields(
+      "Props&Ops public cosplay event schedule - CXM Summer Spring #4",
+      "https://propsops.com/event/"
+    ),
+    id: "event-cxm-summer-spring-4-2026",
+    event_name: "CXM Summer Spring #4",
+    country_or_region: "thailand",
+    city: "กรุงเทพฯ",
+    venue: "Mega Plaza สะพานเหล็ก",
+    start_date: "2026-05-23",
+    end_date: "2026-05-24",
+    event_type: "cosplay",
+    fandom_relevance: "Cosplay community event ในกรุงเทพฯ",
+    expected_content_opportunity:
+      "เก็บ local Bangkok recap, short portrait reveal และโพสต์จองคิวรอบถัดไป",
+    recommended_pre_event_content:
+      "ลงโพสต์บอกคิวถ่ายสั้นและแนวภาพที่เหมาะกับ indoor mall lighting",
+    recommended_event_day_content:
+      "ถ่าย quick reveal แนวตั้งและ detail crop costume",
+    recommended_post_event_content:
+      "โพสต์ before/after retouch พร้อม keyword ช่างภาพคอสเพลย์",
+    notes:
+      "Props&Ops ระบุวันที่ 23-24 พ.ค. ที่ Mega Plaza; ยังต้อง cross-check official event page"
+  },
+  {
+    ...publicObservationResearchFields(
+      "World Cosplay Summit official country page + Props&Ops public schedule - Thailand final",
+      "https://wcc.worldcosplaysummit.jp/en/player-2026/thailand/",
+      "WCS official confirms Thailand preliminary event name and 2026/05/31 date; venue/date range from Props&Ops still needs organizer cross-check"
+    ),
+    id: "event-wcs-thailand-final-2026",
+    event_name: "Japan Week x World Cosplay Summit Thailand 2026 - รอบตัดสิน",
+    country_or_region: "thailand",
+    city: "นนทบุรี",
+    venue: "Central แจ้งวัฒนะ",
+    start_date: "2026-05-30",
+    end_date: "2026-05-31",
+    event_type: "cosplay",
+    fandom_relevance: "World Cosplay Summit Thailand final และ Japan pop culture audience",
+    expected_content_opportunity:
+      "ทำ content คู่กับ AFA weekend: WCS final angle, costume detail, stage/catwalk prep และ booking CTA",
+    recommended_pre_event_content:
+      "โพสต์ compare plan ระหว่าง AFA/QSNCC และ WCS/Central แจ้งวัฒนะ โดยเน้นคิวถ่ายที่ไม่ชนกัน",
+    recommended_event_day_content:
+      "เก็บ detail costume และ recap แบบไม่ใช้ metric เทียบดิบกับ AFA",
+    recommended_post_event_content:
+      "ลง album story และ before/after retouch ที่โยง keyword cosplay thailand",
+    notes:
+      "WCS official ระบุ event name/date 2026/05/31; Props&Ops ระบุรอบตัดสิน 30-31 พ.ค. ที่ Central แจ้งวัฒนะ"
+  },
+  {
+    ...publicObservationResearchFields(
+      "Props&Ops public cosplay event schedule - PPAO E-Sport Championship King of The Game 2026 And Cosplay",
+      "https://propsops.com/event/"
+    ),
+    id: "event-ppao-esport-cosplay-2026",
+    event_name: "PPAO E-Sport Championship King of The Game 2026 And Cosplay",
+    country_or_region: "thailand",
+    city: "พิษณุโลก",
+    venue: "Central Phitsanulok",
+    start_date: "2026-06-06",
+    end_date: "2026-06-07",
+    event_type: "game",
+    fandom_relevance: "E-sport + cosplay audience เหมาะกับ game character และ clip recap",
+    expected_content_opportunity:
+      "ทำ game-cosplay vertical clips, lighting setup สั้น และ CTA ถ่ายคอสสายเกม",
+    recommended_pre_event_content:
+      "โพสต์คิวถ่ายสายเกมและตัวอย่างรีทัชภาพคอสแนว action",
+    recommended_event_day_content:
+      "ถ่าย transition เปิดตัวตัวละครและ BTS แสงในพื้นที่ event",
+    recommended_post_event_content:
+      "ลง before/after action retouch พร้อม first comment รวม keyword",
+    notes:
+      "Props&Ops ระบุวันที่ 6-7 มิ.ย. ที่ Central Phitsanulok; ยังต้องตรวจ organizer/venue official"
+  }
+];
+
 const mockEvents: EventItem[] = Array.from({ length: 8 }, (_, index) => {
   const month = String((index % 6) + 6).padStart(2, "0");
   const startDay = String((index % 8) + 1).padStart(2, "0");
@@ -328,7 +475,7 @@ const mockEvents: EventItem[] = Array.from({ length: 8 }, (_, index) => {
   };
 });
 
-export const events: EventItem[] = [verifiedAfaEvent, ...mockEvents];
+export const events: EventItem[] = [...realEventRadar, verifiedAfaEvent, ...mockEvents];
 
 const toolNames = [
   ["GIMP", "photo_editing", "open_source", "แต่งภาพและรีทัชพื้นฐาน"],

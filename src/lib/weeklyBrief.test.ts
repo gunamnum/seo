@@ -27,7 +27,9 @@ describe("generateWeeklyGrowthBrief", () => {
     expect(brief.postFormats.length).toBeGreaterThan(0);
     expect(brief.platformPlan.length).toBeGreaterThan(0);
     expect(brief.socialSeoKeywords.length).toBeGreaterThan(0);
-    expect(brief.eventOpportunity).toContain(events[0].event_name);
+    const nextEvent = [...events].sort((a, b) => a.start_date.localeCompare(b.start_date))[0];
+
+    expect(brief.eventOpportunity).toContain(nextEvent.event_name);
     expect(brief.chinaToThailandAdaptation).toBeTruthy();
     expect(brief.competitorGapToExploit).toBeTruthy();
     expect(brief.evidenceQuality.length).toBeGreaterThan(0);

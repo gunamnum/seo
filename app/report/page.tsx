@@ -2,12 +2,24 @@ import { Badge, KpiCard, PageHeader, Panel, SimpleTable } from "@/components/ui"
 import { contentIdeas, events, seoKeywords, trendItems } from "@/lib/seed";
 import { generateWeeklyGrowthBrief } from "@/lib/weeklyBrief";
 import { benchmarkCreators, competitors, toolsPlugins } from "@/lib/seed";
-import { labelConfidence, labelPlatform, labelVerification } from "@/lib/thaiLabels";
+import { labelConfidence, labelPlatform, labelSourceType, labelVerification } from "@/lib/thaiLabels";
 
 const afaEvent = events.find((event) => event.id === "event-afa-thailand-2026") ?? events[0];
 const afaTrend = trendItems.find((trend) => trend.id === "trend-afa-thailand-2026") ?? trendItems[0];
 const afaIdea = contentIdeas.find((idea) => idea.id === "idea-afa-thailand-2026") ?? contentIdeas[0];
 const afaKeywords = seoKeywords.filter((keyword) => keyword.id.startsWith("seo-afa-"));
+const realEvents = events
+  .filter((event) => !event.is_mock_data)
+  .sort((a, b) => a.start_date.localeCompare(b.start_date));
+const verifiedEvents = realEvents.filter((event) => event.verification_status === "verified");
+const needsUpdateEvents = realEvents.filter((event) => event.verification_status !== "verified");
+const nextRealEvent = realEvents[0] ?? afaEvent;
+
+function verificationTone(status: string) {
+  if (status === "verified") return "green";
+  if (status === "needs_update") return "amber";
+  return "red";
+}
 
 const brief = generateWeeklyGrowthBrief({
   trends: trendItems,
@@ -24,20 +36,57 @@ export default function ReportPage() {
     <>
       <PageHeader
         title="รายงานจาก Browser Research"
-        description="ข้อมูลที่ค้นหาแล้วใส่เข้าเว็บ: แหล่งที่ยืนยันแล้วใช้เป็น verified ส่วนที่ยังไม่มีตัวเลขจริงใช้ mock พร้อมป้ายกำกับ"
+        description="เริ่มเก็บข้อมูลจริงจากแหล่ง public/official แล้ว: อีเวนต์ที่ยืนยันครบเป็น verified ส่วนตาราง public schedule ที่ยังต้อง cross-check จะติด needs_update ชัดเจน"
       >
-        <Badge tone="green">1 event verified</Badge>
+        <Badge tone="green">{verifiedEvents.length} event verified</Badge>
+        <Badge tone="amber">{needsUpdateEvents.length} needs_update</Badge>
         <Badge tone="amber">mock fallback enabled</Badge>
       </PageHeader>
 
       <div className="mb-6 grid gap-4 md:grid-cols-4">
-        <KpiCard label="อีเวนต์ยืนยันแล้ว" value="1" detail="QSNCC + AFA official" accent="aqua" />
-        <KpiCard label="ช่วงจัดงาน" value="30-31 พ.ค." detail="ปี 2026" accent="sun" />
+        <KpiCard label="อีเวนต์จริงที่เริ่มเก็บ" value={String(realEvents.length)} detail="official + public schedule" accent="aqua" />
+        <KpiCard label="งานถัดไป" value={nextRealEvent.start_date.slice(5)} detail={nextRealEvent.event_name} accent="sun" />
         <KpiCard label="Trend score" value={`${afaTrend.trend_score}/100`} detail="mock fallback metric" accent="berry" />
         <KpiCard label="คีย์เวิร์ด" value={String(afaKeywords.length)} detail="SEO mock fallback" accent="violet" />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+        <Panel title="เรดาร์อีเวนต์จริงที่เริ่มเก็บแล้ว">
+          <SimpleTable
+            columns={["งาน", "วันที่", "สถานที่", "แหล่ง", "สถานะ"]}
+            rows={realEvents.map((event) => ({
+              งาน: event.event_name,
+              วันที่: `${event.start_date} ถึง ${event.end_date}`,
+              สถานที่: event.venue,
+              แหล่ง: (
+                <span>
+                  {labelSourceType(event.source_type)} · Tier {event.source_quality_tier}
+                </span>
+              ),
+              สถานะ: (
+                <Badge tone={verificationTone(event.verification_status)}>
+                  {labelVerification(event.verification_status)}
+                </Badge>
+              )
+            }))}
+          />
+        </Panel>
+
+        <Panel title="โฟกัสงานถัดไป">
+          <div className="rounded-[24px] bg-block-lime p-6">
+            <div className="flex flex-wrap gap-2">
+              <Badge tone={verificationTone(nextRealEvent.verification_status)}>
+                {labelVerification(nextRealEvent.verification_status)}
+              </Badge>
+              <Badge tone="purple">Tier {nextRealEvent.source_quality_tier}</Badge>
+              <Badge tone="amber">{nextRealEvent.source_type === "public_observation" ? "รอ cross-check" : "official"}</Badge>
+            </div>
+            <h3 className="mt-4 text-2xl font-semibold leading-8">{nextRealEvent.event_name}</h3>
+            <p className="mt-3 text-base leading-7">{nextRealEvent.expected_content_opportunity}</p>
+            <p className="mt-4 text-sm leading-6">{nextRealEvent.notes}</p>
+          </div>
+        </Panel>
+
         <Panel title="ข้อมูลที่ยืนยันแล้ว">
           <SimpleTable
             columns={["หัวข้อ", "ค่า", "สถานะ"]}
@@ -92,11 +141,12 @@ export default function ReportPage() {
         <Panel title="คำแนะนำสัปดาห์นี้">
           <div className="rounded-[24px] bg-block-mint p-6">
             <div className="flex flex-wrap gap-2">
-              <Badge tone="pink">event: {afaEvent.event_name}</Badge>
+              <Badge tone="pink">event: {nextRealEvent.event_name}</Badge>
               <Badge tone="blue">{labelPlatform(afaIdea.platform_target)}</Badge>
               <Badge tone="amber">metric mock</Badge>
             </div>
             <p className="mt-4 text-xl font-semibold leading-8">{brief.shootThisWeek}</p>
+            <p className="mt-4 text-base leading-7">{brief.eventOpportunity}</p>
           </div>
         </Panel>
 
@@ -128,6 +178,9 @@ export default function ReportPage() {
           <ul className="grid gap-3 text-sm text-ink">
             <li className="rounded-[24px] bg-block-cream p-4">
               ยังไม่มี analytics export จริง จึงใช้ mock score และ mock SEO priority ก่อน
+            </li>
+            <li className="rounded-[24px] bg-block-cream p-4">
+              งานจาก Props&Ops เป็น public observation ต้อง cross-check กับ organizer/venue official ก่อนใช้ล็อกคิวถ่ายจริง
             </li>
             <li className="rounded-[24px] bg-block-cream p-4">
               ยังไม่มีรายชื่อคู่แข่งจริงจากผู้ใช้ จึงไม่เพิ่ม competitor จริงตามกฎโปรเจกต์
