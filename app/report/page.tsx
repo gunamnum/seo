@@ -1,5 +1,5 @@
 import { Badge, KpiCard, PageHeader, Panel, SimpleTable } from "@/components/ui";
-import { contentIdeas, events, seoKeywords, trendItems } from "@/lib/seed";
+import { contentIdeas, events, marketIndicators, seoKeywords, trendItems } from "@/lib/seed";
 import { generateWeeklyGrowthBrief } from "@/lib/weeklyBrief";
 import { benchmarkCreators, competitors, toolsPlugins } from "@/lib/seed";
 import { labelConfidence, labelPlatform, labelSourceType, labelVerification } from "@/lib/thaiLabels";
@@ -14,6 +14,7 @@ const realEvents = events
 const verifiedEvents = realEvents.filter((event) => event.verification_status === "verified");
 const needsUpdateEvents = realEvents.filter((event) => event.verification_status !== "verified");
 const nextRealEvent = realEvents[0] ?? afaEvent;
+const realMarketSignals = marketIndicators.filter((indicator) => !indicator.is_mock_data);
 
 function verificationTone(status: string) {
   if (status === "verified") return "green";
@@ -46,7 +47,7 @@ export default function ReportPage() {
       <div className="mb-6 grid gap-4 md:grid-cols-4">
         <KpiCard label="อีเวนต์จริงที่เริ่มเก็บ" value={String(realEvents.length)} detail="official + public schedule" accent="aqua" />
         <KpiCard label="งานถัดไป" value={nextRealEvent.start_date.slice(5)} detail={nextRealEvent.event_name} accent="sun" />
-        <KpiCard label="Trend score" value={`${afaTrend.trend_score}/100`} detail="mock fallback metric" accent="berry" />
+        <KpiCard label="Market signals" value={String(realMarketSignals.length)} detail="Digital 2026 Thailand" accent="berry" />
         <KpiCard label="คีย์เวิร์ด" value={String(afaKeywords.length)} detail="SEO mock fallback" accent="violet" />
       </div>
 
@@ -115,6 +116,22 @@ export default function ReportPage() {
           />
         </Panel>
 
+        <Panel title="สัญญาณตลาดจริงจาก Digital 2026 Thailand">
+          <SimpleTable
+            columns={["สัญญาณ", "ค่า", "ใช้กับงานคอสเพลย์", "คุณภาพ"]}
+            rows={realMarketSignals.map((indicator) => ({
+              สัญญาณ: indicator.indicator_name,
+              ค่า: indicator.value,
+              ใช้กับงานคอสเพลย์: indicator.interpretation,
+              คุณภาพ: (
+                <Badge tone="amber">
+                  {labelSourceType(indicator.source_type)} · Tier {indicator.source_quality_tier}
+                </Badge>
+              )
+            }))}
+          />
+        </Panel>
+
         <Panel title="ส่วนที่ใช้ mock ก่อน">
           <SimpleTable
             columns={["รายการ", "ค่า", "ความมั่นใจ"]}
@@ -178,6 +195,9 @@ export default function ReportPage() {
           <ul className="grid gap-3 text-sm text-ink">
             <li className="rounded-[24px] bg-block-cream p-4">
               ยังไม่มี analytics export จริง จึงใช้ mock score และ mock SEO priority ก่อน
+            </li>
+            <li className="rounded-[24px] bg-block-cream p-4">
+              Market signals จาก DataReportal เป็น secondary summary ไม่ใช่ analytics export ของบัญชีนี้
             </li>
             <li className="rounded-[24px] bg-block-cream p-4">
               งานจาก Props&Ops เป็น public observation ต้อง cross-check กับ organizer/venue official ก่อนใช้ล็อกคิวถ่ายจริง

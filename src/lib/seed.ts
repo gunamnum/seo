@@ -69,6 +69,21 @@ function publicObservationResearchFields(
   };
 }
 
+function secondarySummaryResearchFields(sourceLabel: string, sourceUrl: string) {
+  return {
+    source_label: sourceLabel,
+    source_url: sourceUrl,
+    source_type: "secondary_summary" as const,
+    verification_status: "verified" as const,
+    is_mock_data: false,
+    is_estimated: false,
+    is_user_provided: false,
+    source_quality_tier: "C" as const,
+    confidence_reason:
+      "ตรวจจาก secondary summary ที่อ้างอิง platform ad resources และ Kepios/DataReportal; ใช้เป็น market signal ไม่ใช่ analytics ของบัญชีผู้ใช้"
+  };
+}
+
 const trendNames = [
   ["tiktok", "thailand", "RAW เป็นภาพจบ Bright CG", "clip_format", 92, 84, 76, 88, 96, 64],
   ["instagram", "thailand", "คารูเซลครอปรายละเอียดโทนอนิเมะพาสเทล", "visual_style", 74, 62, 71, 72, 91, 58],
@@ -624,7 +639,86 @@ export const contentIdeas: ContentIdea[] = [
   }))
 ];
 
-export const marketIndicators: MarketIndicator[] = [
+const realMarketIndicators: MarketIndicator[] = [
+  {
+    ...secondarySummaryResearchFields(
+      "DataReportal Digital 2026: Thailand",
+      "https://datareportal.com/reports/digital-2026-thailand"
+    ),
+    id: "indicator-th-social-identities-2026",
+    indicator_name: "Thailand social media user identities",
+    period: "October 2025 data used for Digital 2026 Thailand",
+    value: "56.6M social media user identities; 79.1% of total population",
+    confidence_level: "medium",
+    interpretation:
+      "ฐาน social ใหญ่พอสำหรับ organic reach แต่ต้องใช้ content ที่ searchable และ share/save ได้ ไม่ใช่พึ่ง paid ads",
+    forecast_1_year: "Short-form + searchable captions ยังเป็นฐานหลักของ discovery ในไทย",
+    forecast_2_3_years: "บัญชีที่มี series content และ event recap เร็วจะได้เปรียบกว่าโพสต์ภาพเดี่ยวลอยๆ",
+    forecast_3_5_years: "แบรนด์ช่างภาพต้องมี workflow ถ่าย + รีทัช + short clip เพื่อรักษา reach",
+    risks: "ตัวเลขเป็น user identities และอาจไม่เท่ากับ unique people หรือ reach ของบัญชีเฉพาะ",
+    opportunities: "ทำ weekly event radar, BTS, before/after retouch และ caption ค้นหาเจอ",
+    updated_at: "2026-05-14"
+  },
+  {
+    ...secondarySummaryResearchFields(
+      "DataReportal Digital 2026: Thailand - TikTok section",
+      "https://datareportal.com/reports/digital-2026-thailand"
+    ),
+    id: "indicator-tiktok-th-ad-reach-2026",
+    indicator_name: "TikTok Thailand ad reach signal",
+    period: "late 2025 ad resources",
+    value: "56.6M users aged 18+; 96.3% of adults 18+",
+    confidence_level: "medium",
+    interpretation:
+      "TikTok ควรเป็นช่องทางหลักสำหรับ reveal, BTS, retouch timelapse และ event recap แนวตั้ง",
+    forecast_1_year: "TikTok ยังเหมาะกับ discovery แต่ต้องวัดด้วย analytics export ของบัญชีเอง",
+    forecast_2_3_years: "Searchable short video จะสำคัญขึ้นสำหรับ niche service เช่น ถ่ายคอสเพลย์",
+    forecast_3_5_years: "ต้องมี clip system ที่ผลิตซ้ำได้หลังทุกงาน",
+    risks: "เป็น ad reach 18+ ไม่ใช่ monthly active users และไม่บอก performance ของ niche cosplay โดยตรง",
+    opportunities: "ทำ 8-15 วินาที: ภาพจบก่อน, RAW, retouch step, CTA จองคิว",
+    updated_at: "2026-05-14"
+  },
+  {
+    ...secondarySummaryResearchFields(
+      "DataReportal Digital 2026: Thailand - Facebook section",
+      "https://datareportal.com/reports/digital-2026-thailand"
+    ),
+    id: "indicator-facebook-th-ad-reach-2026",
+    indicator_name: "Facebook Thailand ad reach signal",
+    period: "late 2025 ad resources",
+    value: "51.5M users in Thailand",
+    confidence_level: "medium",
+    interpretation:
+      "Facebook ยังเหมาะกับ album/story/booking CTA และโพสต์บริบทอีเวนต์ที่ยาวกว่า TikTok",
+    forecast_1_year: "Facebook ใช้เป็น portfolio + inquiry surface มากกว่าไวรัลล้วน",
+    forecast_2_3_years: "Album + short recap + first comment รวม keyword จะช่วย discovery และ conversion",
+    forecast_3_5_years: "ควรเก็บเป็น archive ผลงานจริงและรีวิวจากลูกค้าที่ผู้ใช้ให้มาเอง",
+    risks: "Meta ปรับวิธีรายงาน ad reach บ่อย จึงไม่ควรเทียบ YoY เองแบบแข็ง",
+    opportunities: "ลง album preview ภายใน 1-3 วันหลังงาน พร้อม CTA จองคิว",
+    updated_at: "2026-05-14"
+  },
+  {
+    ...secondarySummaryResearchFields(
+      "DataReportal Digital 2026: Thailand - Instagram section",
+      "https://datareportal.com/reports/digital-2026-thailand"
+    ),
+    id: "indicator-instagram-th-ad-reach-2026",
+    indicator_name: "Instagram Thailand ad reach signal",
+    period: "late 2025 ad resources",
+    value: "20.6M users; ad reach up 13.9% YoY and 2.0% QoQ",
+    confidence_level: "medium",
+    interpretation:
+      "Instagram เหมาะกับ carousel ภาพจบ, detail crop, Reel reveal และ save-friendly caption",
+    forecast_1_year: "IG ควรใช้คู่กับ TikTok ไม่ใช่โพสต์ซ้ำแบบไม่ปรับ format",
+    forecast_2_3_years: "Detail carousel และ before/after จะช่วยโชว์ premium retouch",
+    forecast_3_5_years: "พอร์ตที่มี style signature จะสำคัญต่อ booking",
+    risks: "เป็น ad reach ไม่ใช่ engagement จริงของบัญชี",
+    opportunities: "ทำ carousel: hero image, crop detail, before/after, retouch note, CTA",
+    updated_at: "2026-05-14"
+  }
+];
+
+const mockMarketIndicatorNames = [
   "การใช้โซเชียลในไทย",
   "Reach ของ TikTok / Instagram / Facebook",
   "จำนวนอีเวนต์คอสเพลย์",
@@ -633,7 +727,9 @@ export const marketIndicators: MarketIndicator[] = [
   "การเติบโตของคู่แข่ง",
   "ผลงานคลิปสั้น",
   "การใช้เครื่องมือ AI retouch / CG"
-].map((name, index) => ({
+] as const;
+
+const mockMarketIndicators: MarketIndicator[] = mockMarketIndicatorNames.map((name, index) => ({
   ...mockResearchFields("ข้อมูล mock ตัวชี้วัดตลาด"),
   id: `indicator-${index + 1}`,
   indicator_name: name,
@@ -649,6 +745,8 @@ export const marketIndicators: MarketIndicator[] = [
   opportunities: "ขายแพ็กเกจถ่าย + รีทัช + คลิปสั้น",
   updated_at: "2026-05-13"
 }));
+
+export const marketIndicators: MarketIndicator[] = [...realMarketIndicators, ...mockMarketIndicators];
 
 export const experiments: Experiment[] = Array.from({ length: 6 }, (_, index) => ({
   ...mockResearchFields("ข้อมูล mock การทดลองคอนเทนต์"),
