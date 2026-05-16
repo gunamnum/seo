@@ -19,6 +19,54 @@ const importTypes = Object.keys(requiredColumns) as ImportType[];
 const inputClass =
   "rounded-[8px] border border-hairline bg-canvas px-4 py-3 text-base text-ink outline-none focus:ring-2 focus:ring-primary/20";
 const noteClass = "rounded-[24px] bg-surface-soft p-4 text-sm leading-6 text-ink";
+const sampleDefaults: Record<string, string> = {
+  id: "sample-1",
+  platform: "manual",
+  main_platform: "instagram",
+  platform_group: "global_platform",
+  region: "thailand",
+  trend_name: "manual trend sample",
+  trend_type: "keyword",
+  collected_at: "2026-05-16",
+  views: "1000",
+  likes: "120",
+  comments: "10",
+  shares: "8",
+  saves: "20",
+  display_name: "Mock Thai Photographer",
+  country_or_region: "thailand",
+  creator_display_name: "Mock Benchmark Creator",
+  event_name: "Mock Cosplay Event",
+  start_date: "2026-06-01",
+  end_date: "2026-06-02",
+  tool_name: "Mock Tool",
+  category: "photo_editing",
+  recommendation_level: "recommended",
+  language: "thai",
+  keyword: "ถ่ายคอสเพลย์",
+  search_intent: "booking",
+  indicator_name: "Manual market signal",
+  period: "2026-Q2",
+  value: "sample value",
+  experiment_name: "Mock caption test",
+  content_type: "before_after",
+  source_label: "Sample CSV generated in browser",
+  source_url: "https://example.com/source",
+  source_type: "manual_csv",
+  verification_status: "needs_verification",
+  is_estimated: "false",
+  is_user_provided: "true",
+  source_quality_tier: "A",
+  confidence_reason: "Sample row for testing import buttons. Replace before using for real analysis."
+};
+
+function createSampleRow(type: ImportType) {
+  const row: Record<string, string> = {};
+  requiredColumns[type].forEach((column) => {
+    row[column] = sampleDefaults[column] ?? "sample";
+  });
+  return row;
+}
 
 export function ImportCenter() {
   const [type, setType] = useState<ImportType>("trend_items");
@@ -29,6 +77,14 @@ export function ImportCenter() {
   const summary = useMemo(() => summarizeImportState(storeState), [storeState]);
   const canPersist = rows.length > 0 && result.valid;
   const hasStoredImports = storeState.records.length > 0;
+  const saveButtonHint = canPersist
+    ? "CSV ผ่านแล้ว กดบันทึกได้"
+    : rows.length === 0
+      ? "ปุ่มบันทึกจะเปิดหลังอัปโหลด CSV หรือใช้ตัวอย่าง"
+      : "ปุ่มบันทึกจะเปิดเมื่อแก้ validation errors ครบ";
+  const clearButtonHint = hasStoredImports
+    ? "มีข้อมูลเก่าใน browser นี้ ล้างได้"
+    : "ปุ่มล้างจะเปิดเมื่อมีข้อมูลที่เคยบันทึกใน browser นี้";
 
   useEffect(() => {
     try {
@@ -73,7 +129,16 @@ export function ImportCenter() {
         <div className="space-y-4">
           <label className="grid gap-2 text-sm font-bold">
             ประเภทข้อมูล
-            <select className={inputClass} value={type} onChange={(event) => setType(event.target.value as ImportType)}>
+            <select
+              className={inputClass}
+              value={type}
+              onChange={(event) => {
+                const nextType = event.target.value as ImportType;
+                setType(nextType);
+                setRows([]);
+                setStorageStatus(`เลือก ${labelImportType(nextType)} แล้ว อัปโหลด CSV หรือใช้ตัวอย่างเพื่อทดสอบปุ่ม`);
+              }}
+            >
               {importTypes.map((item) => (
                 <option key={item} value={item}>
                   {labelImportType(item)}
@@ -106,6 +171,16 @@ export function ImportCenter() {
               });
             }}
           />
+          <button
+            type="button"
+            className="rounded-full border border-hairline bg-canvas px-5 py-2.5 text-sm font-medium text-ink transition hover:bg-surface-soft"
+            onClick={() => {
+              setRows([createSampleRow(type)]);
+              setStorageStatus(`โหลด CSV ตัวอย่างของ ${labelImportType(type)} แล้ว ใช้ทดสอบปุ่มบันทึกได้`);
+            }}
+          >
+            ใช้ CSV ตัวอย่าง
+          </button>
           <div className={result.valid ? "rounded-[24px] bg-block-mint p-4 text-sm text-ink" : "rounded-[24px] bg-block-pink p-4 text-sm text-ink"}>
             {rows.length === 0
               ? "อัปโหลด CSV เพื่อเริ่มตรวจ"
@@ -130,6 +205,10 @@ export function ImportCenter() {
             >
               ล้างข้อมูลที่บันทึก
             </button>
+          </div>
+          <div className="grid gap-2 text-xs leading-5 text-ink md:grid-cols-2">
+            <div className="rounded-[16px] bg-block-cream p-3">{saveButtonHint}</div>
+            <div className="rounded-[16px] bg-block-cream p-3">{clearButtonHint}</div>
           </div>
           <div className={noteClass}>{storageStatus}</div>
         </div>
