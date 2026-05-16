@@ -15,6 +15,9 @@ describe("competitor benchmark report", () => {
     expect(report.chinaBenchmarkCount).toBe(5);
     expect(report.rules.chinaMetricsSeparated).toBe(true);
     expect(report.rules.realCompetitorsManualOnly).toBe(true);
+    expect(competitors.filter((competitor) => competitor.is_user_provided)).toHaveLength(5);
+    expect(report.competitorRows.filter((competitor) => competitor.is_user_provided)).toHaveLength(5);
+    expect(report.competitorRows.some((competitor) => competitor.display_name === "Twixxpix")).toBe(true);
     expect(report.strategyActions.length).toBeGreaterThan(0);
     expect(report.chinaAdaptationActions.every((action) => action.includes("ห้ามเทียบ metric ดิบของจีน"))).toBe(true);
   });

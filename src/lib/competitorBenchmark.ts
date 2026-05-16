@@ -6,6 +6,12 @@ export type CompetitorGapRow = {
   competitor_group: Competitor["competitor_group"];
   main_platform: Competitor["main_platform"];
   threat_level: Competitor["threat_level"];
+  public_url: string;
+  source_type: Competitor["source_type"];
+  verification_status: Competitor["verification_status"];
+  is_mock_data: boolean;
+  is_user_provided: boolean;
+  confidence_reason: string;
   gap_summary: string;
   recommended_action: string;
 };
@@ -104,6 +110,12 @@ export function buildCompetitorBenchmarkReport({
     competitor_group: competitor.competitor_group,
     main_platform: competitor.main_platform,
     threat_level: competitor.threat_level,
+    public_url: competitor.public_url,
+    source_type: competitor.source_type,
+    verification_status: competitor.verification_status,
+    is_mock_data: competitor.is_mock_data,
+    is_user_provided: competitor.is_user_provided,
+    confidence_reason: competitor.confidence_reason,
     gap_summary: competitor.opportunities,
     recommended_action: classifyAction(competitor)
   }));

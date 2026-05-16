@@ -1,5 +1,6 @@
 import { calculateEngagementRateByView, calculateShareabilityScore } from "./metrics";
 import { calculateTrendScore } from "./scoring";
+import { manualCompetitors } from "./manualCompetitors";
 import type {
   BenchmarkCreator,
   Competitor,
@@ -223,7 +224,7 @@ export const viralClips: ViralClip[] = Array.from({ length: 20 }, (_, index) => 
   };
 });
 
-export const competitors: Competitor[] = [
+const mockCompetitors: Competitor[] = [
   "Mock ช่างภาพอีเวนต์ไทย A",
   "Mock พอร์ตเทรตพรีเมียม B",
   "Mock รีทัชแฟนตาซี C",
@@ -260,6 +261,8 @@ export const competitors: Competitor[] = [
   notes: "คู่แข่ง mock ต้องแทนด้วยข้อมูลที่ผู้ใช้กรอกเองเท่านั้น",
   updated_at: "2026-05-13"
 }));
+
+export const competitors: Competitor[] = [...manualCompetitors, ...mockCompetitors];
 
 const benchmarkRegions: Region[] = [
   "thailand",

@@ -119,7 +119,7 @@ export default function QualityPage() {
         <Panel title="ทะเบียนแหล่งข้อมูล">
           <SimpleTable
             columns={["แหล่งข้อมูล", "ประเภท", "Tier", "สถานะ", "จำนวน", "ข้อมูล Mock", "ผู้ใช้"]}
-            rows={report.sourceRows.slice(0, 12).map((source) => ({
+            rows={report.sourceRows.slice(0, 24).map((source) => ({
               แหล่งข้อมูล: source.source_label,
               ประเภท: labelSourceType(source.source_type),
               Tier: <Badge tone={tierTone[source.source_quality_tier]}>Tier {source.source_quality_tier}</Badge>,

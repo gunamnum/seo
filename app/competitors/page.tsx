@@ -2,26 +2,30 @@ import { ExportButton } from "@/components/export-button";
 import { Badge, PageHeader, Panel, SimpleTable } from "@/components/ui";
 import { buildCompetitorBenchmarkReport } from "@/lib/competitorBenchmark";
 import { benchmarkCreators, competitors } from "@/lib/seed";
-import { labelCompetitorGroup, labelImpact, labelPlatform } from "@/lib/thaiLabels";
+import { labelCompetitorGroup, labelImpact, labelPlatform, labelSourceType, labelVerification } from "@/lib/thaiLabels";
 
 export default function CompetitorsPage() {
   const report = buildCompetitorBenchmarkReport({
     competitors,
     benchmarks: benchmarkCreators
   });
+  const manualCompetitorCount = competitors.filter((competitor) => competitor.is_user_provided).length;
+  const mockCompetitorCount = competitors.filter((competitor) => competitor.is_mock_data).length;
 
   return (
     <>
       <PageHeader
         title="วิเคราะห์คู่แข่งและตัวอย่างอ้างอิง"
-        description="ดูช่องว่างคู่แข่งในไทยและรูปแบบจากเอเชีย โดยแยกตัวเลขจีน และชื่อคู่แข่งจริงต้องมาจากผู้ใช้กรอกเองเท่านั้น"
+        description="ดูคู่แข่งไทยจากรายชื่อที่ผู้ใช้ให้เอง แยกจาก mock fallback และ benchmark เอเชีย ห้าม scrape Facebook ที่ต้องล็อกอินหรือเดา metric เอง"
       >
         <ExportButton rows={competitors as unknown as Array<Record<string, unknown>>} filename="competitor-matrix.csv" />
       </PageHeader>
       <div className="mb-4 grid gap-4 md:grid-cols-3">
         <Panel title="คู่แข่งไทย">
           <div className="text-3xl font-black">{report.thaiCompetitorCount}</div>
-          <p className="mt-2 text-sm text-ink">รับเฉพาะข้อมูลคู่แข่งในไทยเข้าตารางนี้</p>
+          <p className="mt-2 text-sm text-ink">
+            Manual {manualCompetitorCount} รายการ · mock fallback {mockCompetitorCount} รายการ
+          </p>
         </Panel>
         <Panel title="แยกตัวอย่างอ้างอิง">
           <div className="flex flex-wrap gap-2">
@@ -35,20 +39,40 @@ export default function CompetitorsPage() {
             <Badge tone={report.rules.thaiCompetitorsOnly ? "green" : "red"}>ไทยเท่านั้น</Badge>
             <Badge tone={report.rules.realCompetitorsManualOnly ? "green" : "red"}>ชื่อจริงต้องกรอกเอง</Badge>
             <Badge tone="green">แยกข้อมูลจีน</Badge>
+            <Badge tone="amber">needs verification</Badge>
           </div>
         </Panel>
       </div>
       <div className="grid gap-4 xl:grid-cols-[1.25fr_0.75fr]">
         <Panel title="ตารางคู่แข่ง">
           <SimpleTable
-            columns={["ชื่อ", "กลุ่ม", "แพลตฟอร์ม", "ช่องว่าง", "ควรทำ", "ความเสี่ยง"]}
+            columns={["ชื่อ", "กลุ่ม", "แพลตฟอร์ม", "หลักฐาน", "ช่องว่าง", "ควรทำ", "สถานะ"]}
             rows={report.competitorRows.map((competitor) => ({
-              ชื่อ: competitor.display_name,
+              ชื่อ: (
+                <a className="font-semibold underline" href={competitor.public_url} target="_blank" rel="noreferrer">
+                  {competitor.display_name}
+                </a>
+              ),
               กลุ่ม: labelCompetitorGroup(competitor.competitor_group),
               แพลตฟอร์ม: <Badge tone="blue">{labelPlatform(competitor.main_platform)}</Badge>,
+              หลักฐาน: (
+                <span className="flex flex-wrap gap-2">
+                  <Badge tone={competitor.is_user_provided ? "green" : "amber"}>
+                    {competitor.is_user_provided ? "manual" : "mock"}
+                  </Badge>
+                  <Badge tone="purple">{labelSourceType(competitor.source_type)}</Badge>
+                </span>
+              ),
               ช่องว่าง: competitor.gap_summary,
               ควรทำ: competitor.recommended_action,
-              ความเสี่ยง: <Badge tone={competitor.threat_level === "high" ? "red" : "amber"}>{labelImpact(competitor.threat_level)}</Badge>
+              สถานะ: (
+                <span className="flex flex-wrap gap-2">
+                  <Badge tone={competitor.verification_status === "verified" ? "green" : "amber"}>
+                    {labelVerification(competitor.verification_status)}
+                  </Badge>
+                  <Badge tone={competitor.threat_level === "high" ? "red" : "amber"}>{labelImpact(competitor.threat_level)}</Badge>
+                </span>
+              )
             }))}
           />
         </Panel>
@@ -98,9 +122,15 @@ export default function CompetitorsPage() {
       <div className="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         {competitors.map((competitor) => (
           <div key={competitor.id} className="rounded-[24px] border border-hairline bg-canvas p-5 shadow-none">
-            <Badge tone="pink">{labelCompetitorGroup(competitor.competitor_group)}</Badge>
+            <div className="flex flex-wrap gap-2">
+              <Badge tone={competitor.is_user_provided ? "green" : "pink"}>
+                {competitor.is_user_provided ? "manual" : "mock"}
+              </Badge>
+              <Badge tone="pink">{labelCompetitorGroup(competitor.competitor_group)}</Badge>
+            </div>
             <h3 className="mt-3 font-black">{competitor.display_name}</h3>
             <p className="mt-2 text-sm text-ink">{competitor.visual_style}</p>
+            <p className="mt-3 text-xs leading-5 text-ink">{competitor.confidence_reason}</p>
           </div>
         ))}
       </div>

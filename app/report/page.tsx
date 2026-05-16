@@ -21,12 +21,13 @@ const urgentEvents = upcomingRealEvents.slice(0, 10);
 const laterEvents = upcomingRealEvents.slice(10);
 const officialUpcomingEvents = upcomingRealEvents.filter((event) => event.verification_status === "verified");
 const radarOnlyEvents = upcomingRealEvents.filter((event) => event.verification_status !== "verified");
+const manualCompetitors = competitors.filter((competitor) => competitor.is_user_provided);
 const agentRunSummaries = [
   ["Orchestrator", "orchestrator-brief.md", "Weekly Growth Brief skeleton + quality gate", "completed"],
   ["Source Research", "source-research.md", "source audit + next public/official sources", "completed"],
   ["Trend Intelligence", "trend-intelligence.md", "7-day trend plan + confidence penalties", "completed"],
   ["China Platform", "china-platform.md", "China separation + adaptation risks", "completed"],
-  ["Competitor & Benchmark", "competitor-benchmark.md", "manual-input template; no real competitor names", "completed"],
+  ["Competitor & Benchmark", "competitor-manual-intake.md", "5 user-provided Facebook competitor records; no login scraping", "completed"],
   ["SEO & Content Strategy", "seo-content-strategy.md", "caption hooks + CTA + required keywords", "completed"],
   ["Data QA & Scoring", "data-qa-scoring.md", "CSV/schema/confidence QA; CSV URL quoting fixed after QA", "completed"],
   ["Product UX / Implementation QA", "product-ux-implementation-qa.md", "route/readability/label QA; heading and mock badge fixed", "completed"]
@@ -85,6 +86,7 @@ export default function ReportPage() {
       >
         <Badge tone="green">{verifiedEvents.length} event verified</Badge>
         <Badge tone="amber">{needsUpdateEvents.length} needs_update</Badge>
+        <Badge tone="green">{manualCompetitors.length} manual competitors</Badge>
         <Badge tone="amber">mock fallback enabled</Badge>
       </PageHeader>
 
@@ -258,6 +260,27 @@ export default function ReportPage() {
           />
         </Panel>
 
+        <Panel title="คู่แข่งที่ผู้ใช้ให้มา">
+          <SimpleTable
+            columns={["ชื่อ", "แพลตฟอร์ม", "หลักฐาน", "ใช้ทำอะไรต่อ"]}
+            rows={manualCompetitors.map((competitor) => ({
+              ชื่อ: (
+                <a className="font-semibold underline" href={competitor.public_url} target="_blank" rel="noreferrer">
+                  {competitor.display_name}
+                </a>
+              ),
+              แพลตฟอร์ม: labelPlatform(competitor.main_platform),
+              หลักฐาน: (
+                <span className="flex flex-wrap gap-2">
+                  <Badge tone="green">manual</Badge>
+                  <Badge tone="amber">{labelVerification(competitor.verification_status)}</Badge>
+                </span>
+              ),
+              "ใช้ทำอะไรต่อ": competitor.opportunities
+            }))}
+          />
+        </Panel>
+
         <Panel title="คำแนะนำสัปดาห์นี้">
           <div className="rounded-[24px] bg-block-mint p-6">
             <div className="flex flex-wrap gap-2">
@@ -306,7 +329,7 @@ export default function ReportPage() {
               งานจาก Props&Ops เป็น public observation ต้อง cross-check กับ organizer/venue official ก่อนใช้ล็อกคิวถ่ายจริง
             </li>
             <li className="rounded-[24px] bg-block-cream p-4">
-              ยังไม่มีรายชื่อคู่แข่งจริงจากผู้ใช้ จึงไม่เพิ่ม competitor จริงตามกฎโปรเจกต์
+              มีรายชื่อคู่แข่งจริงจากผู้ใช้แล้ว {manualCompetitors.length} รายการ แต่ยังต้องตรวจ public content strategy แบบไม่ล็อกอินก่อนใช้เป็นข้อสรุป
             </li>
             <li className="rounded-[24px] bg-block-cream p-4">
               ห้ามใช้ตัวเลข mock เป็นข้อสรุปสุดท้ายจนกว่าจะนำเข้า CSV หรือ source ที่ยืนยันแล้ว
